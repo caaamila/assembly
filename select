@@ -1,0 +1,54 @@
+# You can change these values to test your solution.
+.data
+ARRAY: .word -6 -1 6 1
+SIZE:  .word 4
+INDEX: .word 2
+
+.text
+main:
+  la a1, ARRAY      # a1 = pointer to array
+  lw a2, SIZE       # a2 = array length
+  lw a3, INDEX      # a3 = element index
+  jal ra, select    # call select function
+exit:
+  li a7, 10         # exit syscall code
+  ecall             # terminate the program
+
+# ==========================================================================
+# FUNCTION: select
+#   This function selects an element from an integer array.
+# Arguments:
+#   a1 = pointer to int array
+#   a2 = array length
+#   a3 = element index
+# Returns:
+#   a0 = status code
+#   a1 = value of the selected element
+# ===========================================================================
+
+select:
+  # TODO: Implement the select function here
+
+li t0,1
+blt a2, t0, erroMenor  #a2<1
+bltz a3, erroGrande
+bge a3, a2, erroGrande
+
+
+# endereço = base + (índice * 4)
+slli t1, a3, 2
+add t2, a1, t1 # andar o offset desde o início até á posiçao desejada
+lw a1, 0(t2) #queremos estar exatamente na posicao t2 por isso offset = 0
+li a0, 0
+j select_end
+
+erroMenor:
+    la a0, 50
+    j select_end
+    
+erroGrande:
+    la a0,100
+    j select_end
+
+select_end:
+  jr ra               # return to the caller
