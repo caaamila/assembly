@@ -1,0 +1,23 @@
+.data
+a: .word 4,-1
+
+.text
+li x28,1 #i
+slli x28,x28,2 # puxa bits para a esquerda e adiciona um zero
+la x5,a
+add x5,x5,x28
+
+lw x6, -4(x5) # como ja andamos para a frente com o slli agora temos q voltar -4 para aceder ao primeiro
+lw x7, 0(x5)
+
+bge x7, x6, end
+#A[i]>=A[0]
+addi x29,x7,0 #temp = A[i] (tb podia usar o move)
+addi x7, x6, 0 #A[i]=A[i-1] 
+addi x6, x29, 0 #A[i-1]=temp
+
+sw x6, -4(x5)
+sw x7, 0(x5)
+
+end:
+    nop
