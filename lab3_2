@@ -1,0 +1,17 @@
+.data
+a: .word 3
+b: .word 4
+c: .word 5
+d: .word -1
+y: .zero 4
+
+.text
+lw x5,a #ou lw x5, 0(x5) 
+lw x6,b 
+mul x7, x5,x6 # x7=(a*b)
+
+lw x5,c 
+lw x6,d
+add x5,x5,x6 # x5= (c+d)
+div x7, x7, x5 # x7 = (a*b)/(c+d)
+sw x7,0(x5)
