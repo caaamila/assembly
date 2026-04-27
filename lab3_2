@@ -3,7 +3,8 @@ a: .word 3
 b: .word 4
 c: .word 5
 d: .word -1
-y: .zero 4
+y: .zero 4 #no argumneto n estamos a escrever um valor tamos
+           # a escrever a quantidade de bytes a declarar
 
 .text
 lw x5,a #ou lw x5, 0(x5) 
