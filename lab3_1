@@ -1,0 +1,9 @@
+li x5,5 #a=5
+li x6,6 #b=6
+li x7,7 #c=7
+
+mul x10,x5,x6 #y=a*b
+add x10, x10, x7 #y=y+c
+
+end:
+    j end
