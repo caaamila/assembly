@@ -1,0 +1,59 @@
+# You can change these values to test your solution.
+.data
+A:    .word 6, 1, 3, 9, 12, 4, 13, 153
+B:    .word 6, 1, 3, 9, 12, 4, 13, 153
+SIZE: .word 8
+
+.text
+main:
+  la a1, A          # a1 = pointer to array A
+  la a2, B          # a2 = pointer to array B
+  lw a3, SIZE       # a3 = number of elements in each array
+  jal ra, dot       # call dot function
+exit:
+  li a7, 10         # exit syscall code
+  ecall             # terminate the program
+
+
+# ==========================================================================
+# FUNCTION: dot
+#   This function computes the dot product of two integer arrays.
+# Arguments:
+#   a1 = pointer to first array
+#   a2 = pointer to second array
+#   a3 = array length
+# Returns:
+#   a0 = status code
+#   a1 = dot product result
+# ===========================================================================
+dot:
+  # TODO: Implement the dot product function here
+  li t0,1 
+  blt a3,t0, erro
+  
+  li t1, 0 # inicializar i
+  li t5, 0 # inicliazar soma
+loop:
+    bge t1,a3, dot_end
+    
+    slli t2, t1,2
+    add t3, a1, t2 
+    add t4, a2, t2
+    
+    lw t0, 0(t3) #valor do array A
+    lw t2, 0(t4) # valor do array B
+    
+    mul t6, t0,t2
+    add t5, t5, t6
+    
+    addi t1,t1,1
+    j loop
+    
+erro:
+    li a0, 50
+    jr ra
+
+dot_end:
+  li a0,0
+  mv a1, t5
+  jr ra               # return to the caller
