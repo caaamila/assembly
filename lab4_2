@@ -1,0 +1,143 @@
+.data
+
+array: .word 5, 3, 4, 7
+tamanho: .word 4
+.text
+    # calculate 7 ** 5 + 7 ** 3 = 17150
+    la a0, array
+    li a1, 4
+    li a2,2 #potencia
+    
+    jal array_power
+    
+    li a7, 10  # exit
+    ecall
+
+# power
+#
+# Calculates x to the y th power (x ** y).
+# input: x: a0, y: a1
+# output a0
+
+power:
+#prolog
+    addi sp, sp, -16
+    sw s0, 0(sp)
+    sw s1, 4(sp)
+    sw s2, 8(sp)
+    sw ra, 12(sp)
+    
+    mv s0, a0
+    mv s1, a1
+    li a0, 1
+    mv s2, a0
+    ble a1, zero, power_end
+power_loop:
+    mv a0, s0
+    mv a1, s2
+    jal multiply
+    mv s2, a0
+    addi s1, s1, -1
+    bgt s1, zero, power_loop    
+power_end:
+
+#epilog
+    lw s0, 0(sp)
+    lw s1, 4(sp)
+    lw s2, 8(sp)
+    lw ra, 12(sp)
+    addi sp, sp, 16
+    jr ra
+
+
+# multiply
+#
+# Software multiplication of two unsigned words.
+# inputs: a0, a1
+# outputs: a0
+
+multiply:
+    mv t0, a0
+    li a0, 0
+loop:
+    beq a1, zero, end_multiply
+    andi t1, a1, 1 
+    beq t1, zero, multiply_L1
+    add a0, a0, t0
+multiply_L1:
+    srli a1, a1, 1
+    slli t0, t0, 1
+    j loop
+end_multiply:
+    jr ra
+    
+    
+# array_power
+# Calculate x_i to y th power where x_i are array x elements.
+# inout:
+# a0: array x address
+# a1: array x number of elements
+# a2: y
+
+array_power:
+    addi sp,sp,-24
+    sw ra,20(sp)
+    sw s1,16(sp)
+    sw s2,12(sp)
+    sw s3,8(sp)
+    sw s4,4(sp)
+    sw s5,0(sp)
+    
+    mv s1, a0 # endereço do array!
+    mv s2, a1 # numero de elementos
+    mv s3, a2 # potencia 
+    li s4, 0 # i=0
+    li s5, 0 # soma=0
+
+ciclo:
+    bge s4, s2, done
+    
+    slli t0,s4,2 # i=i*2
+    add t1,s1,t0 # andar i para a frente
+    
+    lw a0,0(t1) # load word da posiçao atual
+    mv a1, s3 #carregar o expoente para a1
+    jal power #é assim q se chama a funcao
+    
+    sw a0,0(t1) #salva o resutlado do numero elevado na memoria 
+    
+    add s5,s5, a0
+    addi s4,s4,1
+    j ciclo
+    
+done:
+    mv a0, s5
+    
+    lw ra,20(sp)
+    lw s1,16(sp)
+    lw s2,12(sp)
+    lw s3,8(sp)
+    lw s4,4(sp)
+    lw s5,0(sp)
+    addi sp,sp,24
+    jr ra
+    
+randomizeCallerSavedRegs:
+    li t0 0x61C0061C
+    li t1 0x61C1161C
+    li t2 0x61C2261C
+    li t3 0x61C3361C
+    li t4 0x61C4461C
+    li t5 0x61C5561C
+    li t6 0x61C6661C
+
+    li a0 0x61C8861C
+    li a1 0x61C9961C
+    li a2 0x61Caa61C
+    li a3 0x61Cbb61C
+    li a4 0x61Ccc61C
+    li a5 0x61Cdd61C
+    li a6 0x61Cee61C
+    li a7 0x61Cff61C
+
+    jr ra
