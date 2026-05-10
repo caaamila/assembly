@@ -1,0 +1,51 @@
+.data
+array1: .word 5, 10, 15, 9, 11
+tamanho1: .word 5
+
+.text
+main:
+    la a0,array1
+    lw a1, tamanho1
+
+arrayAverage:
+    addi sp,sp,-20
+    sw ra, 16(sp)
+    
+    sw s1, 12(sp)
+    sw s2, 8(sp)
+    sw s3, 4(sp)
+    sw s4, 0(sp)
+    
+###################   
+    
+    mv s1, a0 # guardar endereço do array
+    mv s2, a1 # guardar numero de elementos
+    li s3,0 # soma =0
+    li s4, 0 # i=0
+    
+ciclo:
+    bge s4, s2,done
+    
+    slli t0,s4,2 
+    add t0,s1,t0 #adicionar o passo ao endereço do array
+    lw t0, 0(t0)
+    
+    add s3,s3,t0
+    addi s4,s4,1
+    
+    j ciclo
+    
+done:
+    div a0, s3,s2
+    
+    lw ra, 16(sp)
+    
+    lw s1, 12(sp)
+    lw s2, 8(sp)
+    lw s3, 4(sp)
+    lw s4, 0(sp)
+    
+    addi sp,sp,20
+    
+    jr ra
+    
